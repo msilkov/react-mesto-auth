@@ -26,6 +26,10 @@
 @import url(./blocks/popup/__submit-btn/popup__submit-btn.css);
 @import url(./blocks/popup/__close-btn/popup__close-btn.css);
 @import url(./blocks/header/header.css);
+@import url(./blocks/header/__auth/header__auth.css);
+@import url(./blocks/header/__auth-email/header__auth-email.css);
+@import url(./blocks/header/__auth-link/header__auth-link.css);
+@import url(./blocks/header/__auth-link/_active/header__auth-link_active.css);
 @import url(./blocks/logo/logo.css);
 @import url(./blocks/logo/__icon/logo__icon.css);
 @import url(./blocks/content/content.css);
@@ -52,5 +56,7 @@
 @import url(./blocks/card/__remove-btn/card__remove-btn.css);
 @import url(./blocks/card/__remove-btn/_type/card__remove-btn_type_visible.css);
 @import url(./blocks/card/__remove-btn/_type/card__remove-btn_type_hidden.css);
+@import url(./blocks/register/register.css);
+@import url(./blocks/login/login.css);
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copyright/footer__copyright.css);
