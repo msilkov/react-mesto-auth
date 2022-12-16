@@ -12,6 +12,7 @@ import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup.js";
 import Register from "./Register.js";
 import Login from "./Login.js";
+import InfoTooltip from "./InfoTooltip.js";
 
 function App() {
 	const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -21,6 +22,8 @@ function App() {
 	const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
 
 	const [isImagePopupOpen, setImagePopupOpen] = useState(false);
+
+	const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
 
 	const [selectedCard, setSelectedCard] = useState(null);
 
@@ -161,7 +164,7 @@ function App() {
 					<Route path="/sign-up">
 						<Register />
 					</Route>
-					<Route path='/sign-in'>
+					<Route path="/sign-in">
 						<Login />
 					</Route>
 				</Switch>
@@ -200,6 +203,12 @@ function App() {
 					card={selectedCard}
 					onClose={closeAllPopups}
 					isOpen={isImagePopupOpen}
+				/>
+
+				<InfoTooltip
+					name="infoTooltip"
+					isOpen={isInfoTooltipOpen}
+					onClose={closeAllPopups}
 				/>
 			</div>
 		</userContext.Provider>
