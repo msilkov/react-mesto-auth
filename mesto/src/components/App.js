@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Route, Link, Switch, BrowserRouter } from "react-router-dom";
+import { Route, Link, Switch, BrowserRouter, Redirect } from "react-router-dom";
 import Header from "./header/Header.js";
 import Main from "./main/Main.js";
 import Footer from "./footer/Footer.js";
@@ -13,6 +13,7 @@ import AddPlacePopup from "./AddPlacePopup.js";
 import Register from "./Register.js";
 import Login from "./Login.js";
 import InfoTooltip from "./InfoTooltip.js";
+import ProtectedRoute from "./ProtectedRoute.js";
 
 function App() {
 	const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -142,30 +143,36 @@ function App() {
 				console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
 			});
 	}
-	const loggedIn = true;
+	let loggedIn = true;
+
 	return (
 		<userContext.Provider value={currentUser}>
 			<div className="page__content">
 				<Header linkText="Войти" linkPath="sign-up" userEmail="email@mail" />
 
 				<Switch>
-					<Route exact path="/">
-						<Main
-							onEditProfile={handleEditProfileClick}
-							onAddPlace={handleAddPlaceClick}
-							onEditAvatar={handleEditAvatarClick}
-							onCardClick={handleCardClick}
-							cards={cards}
-							onCardLike={handleCardLike}
-							onCardDelete={handleCardDelete}
-						/>
-					</Route>
+					<ProtectedRoute
+						exact
+						path="/"
+						loggedIn={loggedIn}
+						component={Main}
+						onEditProfile={handleEditProfileClick}
+						onAddPlace={handleAddPlaceClick}
+						onEditAvatar={handleEditAvatarClick}
+						onCardClick={handleCardClick}
+						cards={cards}
+						onCardLike={handleCardLike}
+						onCardDelete={handleCardDelete}
+					/>
 
 					<Route path="/sign-up">
 						<Register />
 					</Route>
 					<Route path="/sign-in">
 						<Login />
+					</Route>
+					<Route>
+						{loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
 					</Route>
 				</Switch>
 

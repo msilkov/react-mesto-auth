@@ -7,12 +7,11 @@ export default function Header(props) {
 			<a href="#" className="logo">
 				<img src={logo} alt="Место - Россия" className="logo__icon" />
 			</a>
-			<div class="header__auth">
-				<p class="header__auth-email">{props.userEmail}</p>
+			<div className="header__auth">
+				<p className="header__auth-email">{props.userEmail}</p>
 				<Link
 					to={props.linkPath}
-					class="header__auth-link header__auth-link_active"
-					href="#"
+					className="header__auth-link header__auth-link_active"
 				>
 					{props.linkText}
 				</Link>

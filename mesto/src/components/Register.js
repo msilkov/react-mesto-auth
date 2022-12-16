@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Register() {
@@ -12,7 +13,6 @@ export default function Register() {
 						name="email"
 						className="register__input"
 						placeholder="Email"
-						defaultValue=""
 						minLength={2}
 						maxLength={30}
 						required=""
@@ -34,7 +34,7 @@ export default function Register() {
 				</form>
 				<div className="register__signin">
 					<p className="register__login-text">Уже зарегистрированы?&nbsp;</p>
-					<Link to='sign-in' className="register__login-link">
+					<Link to="sign-in" className="register__login-link">
 						Войти
 					</Link>
 				</div>
