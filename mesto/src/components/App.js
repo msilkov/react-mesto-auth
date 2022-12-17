@@ -7,9 +7,9 @@ import {
 	Redirect,
 	useHistory,
 } from "react-router-dom";
-import Header from "./header/Header.js";
+import Header from "./Header.js";
 import Main from "./main/Main.js";
-import Footer from "./footer/Footer.js";
+import Footer from "./Footer.js";
 import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
 import api from "../utils/api.js";
