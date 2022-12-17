@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-	Route,
-	Link,
-	Switch,
-	BrowserRouter,
-	Redirect,
-	useHistory,
-} from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Header from "./Header.js";
 import Main from "./Main.js";
 import Footer from "./Footer.js";
