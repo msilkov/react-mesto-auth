@@ -143,7 +143,7 @@ function App() {
 				console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
 			});
 	}
-	let loggedIn = true;
+	let loggedIn = false;
 
 	return (
 		<userContext.Provider value={currentUser}>
