@@ -8,7 +8,7 @@ import {
 	useHistory,
 } from "react-router-dom";
 import Header from "./Header.js";
-import Main from "./main/Main.js";
+import Main from "./Main.js";
 import Footer from "./Footer.js";
 import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
@@ -67,8 +67,9 @@ function App() {
 	const history = useHistory();
 
 	const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+	const [isRequestStatus, setRequestStatus] = useState(false);
 
-	const [isLoggedIn, setLoggedIn] = useState(true);
+	const [isLoggedIn, setLoggedIn] = useState(false);
 
 	const [email, setEmail] = useState("");
 
@@ -87,13 +88,23 @@ function App() {
 	function handleLogout() {
 		localStorage.removeItem("jwt");
 		setEmail("");
-		setLoggedIn(false);
 	}
 
 	function handleRegister(password, email) {
-		auth.register(password, email).then(() => {
-			history.push("/sign-in");
-		});
+		auth
+			.register(password, email)
+			.then(() => {
+				setRequestStatus(true);
+				handleInfoTooltip();
+			})
+			.then(() => {
+				history.push("/sign-in");
+			})
+			.catch((err) => {
+				console.log(err);
+				setRequestStatus(false);
+				handleInfoTooltip();
+			});
 	}
 
 	function tokenCheck() {
@@ -144,7 +155,12 @@ function App() {
 		setEditProfilePopupOpen(false);
 		setAddPlacePopupOpen(false);
 		setEditAvatarPopupOpen(false);
+		setInfoTooltipOpen(false);
 		setTimeout(clearCardDelay, 500);
+	}
+
+	function handleInfoTooltip() {
+		setInfoTooltipOpen(true);
 	}
 
 	function handleEditProfileClick() {
@@ -269,6 +285,7 @@ function App() {
 					name="infoTooltip"
 					isOpen={isInfoTooltipOpen}
 					onClose={closeAllPopups}
+					request={isRequestStatus}
 				/>
 			</div>
 		</currentUserContext.Provider>

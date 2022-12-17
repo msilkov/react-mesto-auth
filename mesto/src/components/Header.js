@@ -1,4 +1,4 @@
-import logo from "../../images/logo/logo.svg";
+import logo from "../images/logo/logo.svg";
 import { Switch, Route, Link } from "react-router-dom";
 
 export default function Header(props) {
@@ -8,7 +8,6 @@ export default function Header(props) {
 				<img src={logo} alt="Место - Россия" className="logo__icon" />
 			</a>
 			<div className="header__auth">
-				<p className="header__auth-email">{props.userEmail}</p>
 				<Switch>
 					<Route path="/sign-in">
 						<Link to="/sign-up" className="header__auth-link">
@@ -21,6 +20,7 @@ export default function Header(props) {
 						</Link>
 					</Route>
 					<Route path="/">
+						<p className="header__auth-email">{props.userEmail}</p>
 						<Link
 							to="/sign-in"
 							className="header__auth-link header__auth-link_active"

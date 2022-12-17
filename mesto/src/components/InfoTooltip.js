@@ -1,5 +1,6 @@
 import Popup from "./Popup";
 import failIcon from "../images/icons/fail-icon.svg";
+import successIcon from "../images/icons/success-icon.svg";
 export default function InfoTooltip(props) {
 	return (
 		<Popup
@@ -12,10 +13,12 @@ export default function InfoTooltip(props) {
 			<div className="popup__container">
 				<img
 					className="popup__img popup__icon-infoTooltip"
-					src={failIcon}
+					src={props.request ? successIcon : failIcon}
 					alt="ошибка"
 				/>
-				<p className="popup__text">Что-то пошло не так! Попробуйте ещё раз.</p>
+				<p className="popup__text">
+					{props.request ? "Вы успешно зарегистрировались!" : " Что-то пошло не так! Попробуйте ещё раз."}
+				</p>
 				<button
 					type="reset"
 					className="popup__close-btn"
