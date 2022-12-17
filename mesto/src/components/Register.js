@@ -1,32 +1,32 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import * as auth from "../utils/auth.js";
+import { Link } from "react-router-dom";
 
-export default function Register() {
-
+export default function Register(props) {
 	const [userData, setUserData] = useState({
 		email: "",
 		password: "",
 	});
 
-
-
 	function handleChangeData(e) {
 		const { name, value } = e.target;
-		setUserData({
-			...userData,
+		setUserData((oldData) => ({
+			...oldData,
 			[name]: value,
-		});
+		}));
 	}
 
 	function handleSubmit(e) {
 		e.preventDefault();
 
-		auth
-			.register(userData.password, userData.email)
-		
+		const { password, email } = userData;
 
-			
+		props.onRegister(password, email).catch((err) => {
+			console.log(err);
+			setUserData((oldData) => ({
+				...oldData,
+				message: "Что-то пошло не так!",
+			}));
+		});
 	}
 
 	return (

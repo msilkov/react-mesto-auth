@@ -5,7 +5,7 @@ const request = ({ url, method = "POST", token, data }) => {
 		method,
 		headers: {
 			"Content-Type": "application/json",
-			...(!!token && { Authorization: `Bearer ${token}` }),
+			...(!!token && { 'Authorization': `Bearer ${token}` }),
 		},
 		...(!!data && { body: JSON.stringify(data) }),
 	}).then((res) => {
