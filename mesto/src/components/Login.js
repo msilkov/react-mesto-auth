@@ -25,18 +25,13 @@ export default function Login(props) {
 
 		if (!password || !email) return;
 
-		props
-			.onLogin(password, email)
-			.then(() => {
-				setUserData(initialUserData);
-			})
-			.catch((err) => {
-				console.log(err);
-				setUserData((oldData) => ({
-					...oldData,
-					message: "Что-то пошло не так!",
-				}));
-			});
+		props.onLogin(password, email).catch((err) => {
+			console.log(err);
+			setUserData((oldData) => ({
+				...oldData,
+				message: "Что-то пошло не так!",
+			}));
+		});
 	}
 
 	return (

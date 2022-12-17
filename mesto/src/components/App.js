@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-import { Route, Link, Switch, BrowserRouter, Redirect } from "react-router-dom";
+import {
+	Route,
+	Link,
+	Switch,
+	BrowserRouter,
+	Redirect,
+	useHistory,
+} from "react-router-dom";
 import Header from "./header/Header.js";
 import Main from "./main/Main.js";
 import Footer from "./footer/Footer.js";
 import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
 import api from "../utils/api.js";
+import * as auth from "../utils/auth.js";
 import { userContext } from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
@@ -16,22 +24,6 @@ import InfoTooltip from "./InfoTooltip.js";
 import ProtectedRoute from "./ProtectedRoute.js";
 
 function App() {
-	const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
-
-	const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
-
-	const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
-
-	const [isImagePopupOpen, setImagePopupOpen] = useState(false);
-
-	const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
-
-	const [selectedCard, setSelectedCard] = useState(null);
-
-	const [currentUser, setCurrentUser] = useState({});
-
-	const [cards, setCards] = useState([]);
-
 	useEffect(() => {
 		api
 			.getUserInfo()
@@ -53,6 +45,64 @@ function App() {
 				console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
 			});
 	}, []);
+
+	useEffect(() => {
+		tokenCheck();
+	}, []);
+
+	const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
+
+	const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
+
+	const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+
+	const [isImagePopupOpen, setImagePopupOpen] = useState(false);
+
+	const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+
+	const [selectedCard, setSelectedCard] = useState(null);
+
+	const [currentUser, setCurrentUser] = useState({});
+
+	const [cards, setCards] = useState([]);
+
+	const [isLoggedIn, setLoggedIn] = useState(true);
+
+	const history = useHistory();
+
+	function handleLogin(password, email) {
+		auth.authorize(password, email).then((data) => {
+			console.log(data);
+			if (!data) {
+				return Promise.reject("No data!");
+			}
+			localStorage.setItem("jwt", data.token);
+			// setLoggedIn(true);
+		});
+	}
+
+	function handleRegister(password, email) {
+		 auth.register(password, email).then(() => {
+			history.push("/sign-in");
+		});
+	}
+
+	function tokenCheck() {
+		if (!localStorage.getItem("jwt")) return;
+
+		const jwt = localStorage.getItem("jwt");
+
+		auth.getContent(jwt).then((res) => {
+			if (res) {
+				const userData = {
+					username: res.username,
+					email: res.email,
+				};
+				setLoggedIn(true);
+				history.push("/");
+			}
+		});
+	}
 
 	function handleCardLike(card, isOwnLiked) {
 		api
@@ -143,36 +193,33 @@ function App() {
 				console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
 			});
 	}
-	let loggedIn = false;
 
 	return (
 		<userContext.Provider value={currentUser}>
 			<div className="page__content">
-				<Header linkText="Войти" linkPath="sign-up" userEmail="email@mail" />
+				<Header linkText="Войти" linkPath="sign-up" userEmail="mail" />
 
 				<Switch>
-					<ProtectedRoute
-						exact
-						path="/"
-						loggedIn={loggedIn}
-						component={Main}
-						onEditProfile={handleEditProfileClick}
-						onAddPlace={handleAddPlaceClick}
-						onEditAvatar={handleEditAvatarClick}
-						onCardClick={handleCardClick}
-						cards={cards}
-						onCardLike={handleCardLike}
-						onCardDelete={handleCardDelete}
-					/>
+					<ProtectedRoute exact path="/" loggedIn={isLoggedIn}>
+						<Main
+							onEditProfile={handleEditProfileClick}
+							onAddPlace={handleAddPlaceClick}
+							onEditAvatar={handleEditAvatarClick}
+							onCardClick={handleCardClick}
+							cards={cards}
+							onCardLike={handleCardLike}
+							onCardDelete={handleCardDelete}
+						/>
+					</ProtectedRoute>
 
 					<Route path="/sign-up">
-						<Register />
+						<Register onRegister={handleRegister} />
 					</Route>
 					<Route path="/sign-in">
-						<Login />
+						<Login onLogin={handleLogin} />
 					</Route>
 					<Route>
-						{loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+						{isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
 					</Route>
 				</Switch>
 

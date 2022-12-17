@@ -9,7 +9,7 @@ const initialUserData = {
 export default function Register(props) {
 	const [userData, setUserData] = useState(initialUserData);
 
-	function handleChangeData(e) {
+	function handleChange(e) {
 		const { name, value } = e.target;
 		setUserData((oldData) => ({
 			...oldData,
@@ -21,16 +21,10 @@ export default function Register(props) {
 		e.preventDefault();
 
 		const { password, email } = userData;
-		// console.log("run",password, email)
+
 		if (!password || !email) return;
 
-		props.onRegister(password, email).catch((err) => {
-			console.log(err);
-			setUserData((oldData) => ({
-				...oldData,
-				message: "Что-то пошло не так!",
-			}));
-		});
+		props.onRegister(password, email);
 	}
 
 	return (
@@ -43,7 +37,7 @@ export default function Register(props) {
 						type="email"
 						name="email"
 						value={userData.email}
-						onChange={handleChangeData}
+						onChange={handleChange}
 						className="register__input"
 						placeholder="Email"
 						minLength={2}
@@ -55,7 +49,7 @@ export default function Register(props) {
 						type="password"
 						name="password"
 						value={userData.password}
-						onChange={handleChangeData}
+						onChange={handleChange}
 						className="register__input"
 						placeholder="Пароль"
 						minLength={2}
