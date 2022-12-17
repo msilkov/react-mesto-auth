@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { userContext } from "../contexts/CurrentUserContext.js";
+import { currentUserContext } from "../contexts/CurrentUserContext.js";
 
 export default function Card(props) {
-	const currentUser = useContext(userContext);
+	const currentUser = useContext(currentUserContext);
 
 	const isOwn = props.card.owner._id === currentUser._id;
 

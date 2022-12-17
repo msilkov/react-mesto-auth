@@ -1,10 +1,10 @@
 import PopupWithForm from "./PopupWithForm.js";
 import InputText from "./InputText.js";
 import { useState, useContext, useEffect } from "react";
-import { userContext } from "../contexts/CurrentUserContext";
+import { currentUserContext } from "../contexts/CurrentUserContext";
 
 export default function EditProfilePopup(props) {
-	const currentUser = useContext(userContext);
+	const currentUser = useContext(currentUserContext);
 
 	function handleFormSubmit(e) {
 		e.preventDefault();

@@ -14,7 +14,7 @@ import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
 import api from "../utils/api.js";
 import * as auth from "../utils/auth.js";
-import { userContext } from "../contexts/CurrentUserContext";
+import { currentUserContext } from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup.js";
@@ -58,17 +58,19 @@ function App() {
 
 	const [isImagePopupOpen, setImagePopupOpen] = useState(false);
 
-	const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
-
 	const [selectedCard, setSelectedCard] = useState(null);
 
 	const [currentUser, setCurrentUser] = useState({});
 
 	const [cards, setCards] = useState([]);
 
+	const history = useHistory();
+
+	const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+
 	const [isLoggedIn, setLoggedIn] = useState(true);
 
-	const history = useHistory();
+	const [email, setEmail] = useState("");
 
 	function handleLogin(password, email) {
 		auth.authorize(password, email).then((data) => {
@@ -77,12 +79,19 @@ function App() {
 				return Promise.reject("No data!");
 			}
 			localStorage.setItem("jwt", data.token);
-			// setLoggedIn(true);
+			setLoggedIn(true);
+			history.push("/");
 		});
 	}
 
+	function handleLogout() {
+		localStorage.removeItem("jwt");
+		setEmail("");
+		setLoggedIn(false);
+	}
+
 	function handleRegister(password, email) {
-		 auth.register(password, email).then(() => {
+		auth.register(password, email).then(() => {
 			history.push("/sign-in");
 		});
 	}
@@ -94,10 +103,7 @@ function App() {
 
 		auth.getContent(jwt).then((res) => {
 			if (res) {
-				const userData = {
-					username: res.username,
-					email: res.email,
-				};
+				setEmail(res.data.email);
 				setLoggedIn(true);
 				history.push("/");
 			}
@@ -195,9 +201,9 @@ function App() {
 	}
 
 	return (
-		<userContext.Provider value={currentUser}>
+		<currentUserContext.Provider value={currentUser}>
 			<div className="page__content">
-				<Header linkText="Войти" linkPath="sign-up" userEmail="mail" />
+				<Header userEmail={email} onLogout={handleLogout} />
 
 				<Switch>
 					<ProtectedRoute exact path="/" loggedIn={isLoggedIn}>
@@ -265,7 +271,7 @@ function App() {
 					onClose={closeAllPopups}
 				/>
 			</div>
-		</userContext.Provider>
+		</currentUserContext.Provider>
 	);
 }
 

@@ -21,17 +21,10 @@ export default function Login(props) {
 		e.preventDefault();
 
 		const { password, email } = userData;
-		// console.log("run", password, email);
 
 		if (!password || !email) return;
 
-		props.onLogin(password, email).catch((err) => {
-			console.log(err);
-			setUserData((oldData) => ({
-				...oldData,
-				message: "Что-то пошло не так!",
-			}));
-		});
+		props.onLogin(password, email);
 	}
 
 	return (
