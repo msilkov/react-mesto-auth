@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+const initialUserData = {
+	email: "",
+	password: "",
+};
+
 export default function Register(props) {
-	const [userData, setUserData] = useState({
-		email: "",
-		password: "",
-	});
+	const [userData, setUserData] = useState(initialUserData);
 
 	function handleChangeData(e) {
 		const { name, value } = e.target;
@@ -19,6 +21,8 @@ export default function Register(props) {
 		e.preventDefault();
 
 		const { password, email } = userData;
+		// console.log("run",password, email)
+		if (!password || !email) return;
 
 		props.onRegister(password, email).catch((err) => {
 			console.log(err);

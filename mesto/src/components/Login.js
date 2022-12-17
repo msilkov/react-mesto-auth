@@ -1,19 +1,60 @@
-export default function Login() {
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+
+const initialUserData = {
+	email: "",
+	password: "",
+};
+
+export default function Login(props) {
+	const [userData, setUserData] = useState(initialUserData);
+
+	function handleChangeData(e) {
+		const { name, value } = e.target;
+		setUserData((oldData) => ({
+			...oldData,
+			[name]: value,
+		}));
+	}
+
+	function handleSubmit(e) {
+		e.preventDefault();
+
+		const { password, email } = userData;
+		// console.log("run", password, email);
+
+		if (!password || !email) return;
+
+		props
+			.onLogin(password, email)
+			.then(() => {
+				setUserData(initialUserData);
+			})
+			.catch((err) => {
+				console.log(err);
+				setUserData((oldData) => ({
+					...oldData,
+					message: "Что-то пошло не так!",
+				}));
+			});
+	}
+
 	return (
 		<section className="login section section_size_narrow page__section">
 			<h2 className="login__title">Вход</h2>
 			<div className="login__content">
-				<form className="login__form">
+				<form className="login__form" onSubmit={handleSubmit}>
 					<input
 						id="email-input"
 						type="email"
 						name="email"
 						className="login__input"
 						placeholder="Email"
-						defaultValue=""
+						value={userData.email}
 						minLength={2}
 						maxLength={30}
 						required=""
+						onChange={handleChangeData}
 					/>
 					<input
 						id="password-input"
@@ -21,10 +62,11 @@ export default function Login() {
 						name="password"
 						className="login__input"
 						placeholder="Пароль"
-						defaultValue=""
+						value={userData.password}
 						minLength={2}
 						maxLength={30}
 						required=""
+						onChange={handleChangeData}
 					/>
 					<button type="submit" className="login__submit-btn">
 						Войти
