@@ -5,9 +5,6 @@ import Main from "./Main.js";
 import Footer from "./Footer.js";
 import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
-import api from "../utils/api.js";
-import * as auth from "../utils/auth.js";
-import { currentUserContext } from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup.js";
@@ -15,34 +12,11 @@ import Register from "./Register.js";
 import Login from "./Login.js";
 import InfoTooltip from "./InfoTooltip.js";
 import ProtectedRoute from "./ProtectedRoute.js";
+import { currentUserContext } from "../contexts/CurrentUserContext";
+import api from "../utils/api.js";
+import * as auth from "../utils/auth.js";
 
 function App() {
-	useEffect(() => {
-		api
-			.getUserInfo()
-			.then((userData) => {
-				setCurrentUser(userData);
-			})
-			.catch((err) => {
-				console.log(`Ошибка при загрузке данных с сервера: ${err}`);
-			});
-	}, []);
-
-	useEffect(() => {
-		api
-			.getCards()
-			.then((cards) => {
-				setCards(cards);
-			})
-			.catch((err) => {
-				console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
-			});
-	}, []);
-
-	useEffect(() => {
-		tokenCheck();
-	}, []);
-
 	const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
 
 	const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
@@ -66,16 +40,44 @@ function App() {
 
 	const [email, setEmail] = useState("");
 
+	useEffect(() => {
+		if (isLoggedIn) {
+			api
+				.getUserInfo()
+				.then((userData) => {
+					setCurrentUser(userData);
+				})
+				.catch((err) => {
+					console.log(`Ошибка при загрузке данных с сервера: ${err}`);
+				});
+
+			api
+				.getCards()
+				.then((cards) => {
+					setCards(cards);
+				})
+				.catch((err) => {
+					console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
+				});
+		}
+		tokenCheck();
+	}, [isLoggedIn]);
+
 	function handleLogin(password, email) {
-		auth.authorize(password, email).then((data) => {
-			console.log(data);
-			if (!data) {
-				return Promise.reject("No data!");
-			}
-			localStorage.setItem("jwt", data.token);
-			setLoggedIn(true);
-			history.push("/");
-		});
+		auth
+			.authorize(password, email)
+			.then((data) => {
+				if (!data) {
+					return Promise.reject("No data!");
+				}
+				localStorage.setItem("jwt", data.token);
+				setLoggedIn(true);
+				tokenCheck();
+				history.push("/");
+			})
+			.catch((err) => {
+				console.log(`Что-то пошло не так: ${err}`);
+			});
 	}
 
 	function handleLogout() {
@@ -86,15 +88,13 @@ function App() {
 	function handleRegister(password, email) {
 		auth
 			.register(password, email)
-			.then(() => {
+			.then((data) => {
 				setRequestStatus(true);
 				handleInfoTooltip();
-			})
-			.then(() => {
 				history.push("/sign-in");
 			})
 			.catch((err) => {
-				console.log(err);
+				console.log(`Что-то пошло не так: ${err}`);
 				setRequestStatus(false);
 				handleInfoTooltip();
 			});
@@ -105,13 +105,18 @@ function App() {
 
 		const jwt = localStorage.getItem("jwt");
 
-		auth.getContent(jwt).then((res) => {
-			if (res) {
-				setEmail(res.data.email);
-				setLoggedIn(true);
-				history.push("/");
-			}
-		});
+		auth
+			.getContent(jwt)
+			.then((res) => {
+				if (res) {
+					setEmail(res.data.email);
+					setLoggedIn(true);
+					history.push("/");
+				}
+			})
+			.catch((err) => {
+				console.log(`Что-то пошло не так: ${err}`);
+			});
 	}
 
 	function handleCardLike(card, isOwnLiked) {
