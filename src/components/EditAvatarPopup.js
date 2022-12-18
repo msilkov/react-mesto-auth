@@ -1,6 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import PopupWithForm from "./PopupWithForm.js";
 import InputLink from "./InputLink.js";
-import { useEffect, useRef, useState } from "react";
 
 export default function EditAvatarPopup(props) {
 	const inputLink = useRef("");

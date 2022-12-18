@@ -34,6 +34,7 @@ function App() {
 	const history = useHistory();
 
 	const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+
 	const [isRequestStatus, setRequestStatus] = useState(false);
 
 	const [isLoggedIn, setLoggedIn] = useState(false);

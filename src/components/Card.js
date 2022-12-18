@@ -11,6 +11,7 @@ export default function Card(props) {
 	}`;
 
 	const isOwnLiked = props.card.likes.some((i) => i._id === currentUser._id);
+
 	const cardLikeButtonClassName = `${
 		isOwnLiked ? "card__like-btn card__like-btn_active" : "card__like-btn"
 	}`;
