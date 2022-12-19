@@ -61,8 +61,11 @@ function App() {
 					console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
 				});
 		}
-		tokenCheck();
 	}, [isLoggedIn]);
+
+	useEffect(() => {
+		tokenCheck();
+	}, []);
 
 	function handleLogin(password, email) {
 		auth
@@ -89,7 +92,7 @@ function App() {
 	function handleRegister(password, email) {
 		auth
 			.register(password, email)
-			.then((data) => {
+			.then(() => {
 				setRequestStatus(true);
 				handleInfoTooltip();
 				history.push("/sign-in");
