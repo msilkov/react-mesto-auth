@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef } from 'react';
 
 const InputLink = forwardRef(
 	({ placeholder, link, value, onChange, ...restProps }, ref) => {

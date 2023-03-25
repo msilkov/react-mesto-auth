@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
-import Header from "./Header.js";
-import Main from "./Main.js";
-import Footer from "./Footer.js";
-import PopupWithForm from "./PopupWithForm.js";
-import ImagePopup from "./ImagePopup.js";
-import EditProfilePopup from "./EditProfilePopup.js";
-import EditAvatarPopup from "./EditAvatarPopup.js";
-import AddPlacePopup from "./AddPlacePopup.js";
-import Register from "./Register.js";
-import Login from "./Login.js";
-import InfoTooltip from "./InfoTooltip.js";
-import ProtectedRoute from "./ProtectedRoute.js";
-import { currentUserContext } from "../contexts/CurrentUserContext";
-import api from "../utils/api.js";
-import * as auth from "../utils/auth.js";
+import { useState, useEffect } from 'react';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import Header from './Header.js';
+import Main from './Main.js';
+import Footer from './Footer.js';
+import PopupWithForm from './PopupWithForm.js';
+import ImagePopup from './ImagePopup.js';
+import EditProfilePopup from './EditProfilePopup.js';
+import EditAvatarPopup from './EditAvatarPopup.js';
+import AddPlacePopup from './AddPlacePopup.js';
+import Register from './Register.js';
+import Login from './Login.js';
+import InfoTooltip from './InfoTooltip.js';
+import ProtectedRoute from './ProtectedRoute.js';
+import { currentUserContext } from '../contexts/CurrentUserContext';
+import api from '../utils/api.js';
+import * as auth from '../utils/auth.js';
 
 function App() {
 	const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -39,26 +39,17 @@ function App() {
 
 	const [isLoggedIn, setLoggedIn] = useState(false);
 
-	const [email, setEmail] = useState("");
+	const [email, setEmail] = useState('');
 
 	useEffect(() => {
 		if (isLoggedIn) {
-			api
-				.getUserInfo()
-				.then((userData) => {
+			Promise.all([api.getUserInfo(), api.getCards()])
+				.then(([userData, cards]) => {
 					setCurrentUser(userData);
-				})
-				.catch((err) => {
-					console.log(`Ошибка при загрузке данных с сервера: ${err}`);
-				});
-
-			api
-				.getCards()
-				.then((cards) => {
 					setCards(cards);
 				})
 				.catch((err) => {
-					console.log(`Ошибка при загрузке карточек с сервера: ${err}`);
+					console.log(`Ошибка при загрузке данных с сервера: ${err}`);
 				});
 		}
 	}, [isLoggedIn]);
@@ -72,21 +63,23 @@ function App() {
 			.authorize(password, email)
 			.then((data) => {
 				if (!data) {
-					return Promise.reject("No data!");
+					return Promise.reject('No data!');
 				}
-				localStorage.setItem("jwt", data.token);
+				localStorage.setItem('jwt', data.token);
 				setLoggedIn(true);
 				tokenCheck();
-				history.push("/");
+				history.push('/');
 			})
 			.catch((err) => {
 				console.log(`Что-то пошло не так: ${err}`);
+				setRequestStatus(false);
+				handleInfoTooltip();
 			});
 	}
 
 	function handleLogout() {
-		localStorage.removeItem("jwt");
-		setEmail("");
+		localStorage.removeItem('jwt');
+		setEmail('');
 	}
 
 	function handleRegister(password, email) {
@@ -95,7 +88,7 @@ function App() {
 			.then(() => {
 				setRequestStatus(true);
 				handleInfoTooltip();
-				history.push("/sign-in");
+				history.push('/sign-in');
 			})
 			.catch((err) => {
 				console.log(`Что-то пошло не так: ${err}`);
@@ -105,9 +98,9 @@ function App() {
 	}
 
 	function tokenCheck() {
-		if (!localStorage.getItem("jwt")) return;
+		if (!localStorage.getItem('jwt')) return;
 
-		const jwt = localStorage.getItem("jwt");
+		const jwt = localStorage.getItem('jwt');
 
 		auth
 			.getContent(jwt)
@@ -115,7 +108,7 @@ function App() {
 				if (res) {
 					setEmail(res.data.email);
 					setLoggedIn(true);
-					history.push("/");
+					history.push('/');
 				}
 			})
 			.catch((err) => {
@@ -222,7 +215,6 @@ function App() {
 		<currentUserContext.Provider value={currentUser}>
 			<div className="page__content">
 				<Header userEmail={email} onLogout={handleLogout} />
-
 				<Switch>
 					<ProtectedRoute exact path="/" loggedIn={isLoggedIn}>
 						<Main

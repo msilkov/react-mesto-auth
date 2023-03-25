@@ -1,7 +1,8 @@
-import { Switch, Route, Link } from "react-router-dom";
-import logo from "../images/logo/logo.svg";
+import { Switch, Route, Link } from 'react-router-dom';
+import logo from '../images/logo/logo.svg';
 
-export default function Header(props) {
+export default function Header({ userEmail, onLogout }) {
+	
 	return (
 		<header className="header section section_size_narrow page__header">
 			<a href="/" className="logo">
@@ -20,11 +21,11 @@ export default function Header(props) {
 						</Link>
 					</Route>
 					<Route path="/">
-						<p className="header__auth-email">{props.userEmail}</p>
+						<p className="header__auth-email">{userEmail}</p>
 						<Link
 							to="/sign-in"
 							className="header__auth-link header__auth-link_active"
-							onClick={props.onLogout}
+							onClick={onLogout}
 						>
 							Выйти
 						</Link>

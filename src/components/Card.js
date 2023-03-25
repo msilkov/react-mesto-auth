@@ -15,6 +15,7 @@ export default function Card(props) {
 	const cardLikeButtonClassName = `${
 		isOwnLiked ? "card__like-btn card__like-btn_active" : "card__like-btn"
 	}`;
+	
 
 	function handleImgClick() {
 		props.onClick(props.card);
