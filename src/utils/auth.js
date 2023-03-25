@@ -1,7 +1,7 @@
-export const BASE_URL = "https://auth.nomoreparties.co";
+import { authUrl } from './utils';
 
 const request = ({ url, method = "POST", token, data }) => {
-	return fetch(`${BASE_URL}${url}`, {
+	return fetch(`${authUrl}${url}`, {
 		method,
 		headers: {
 			"Content-Type": "application/json",

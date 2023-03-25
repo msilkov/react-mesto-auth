@@ -1,7 +1,8 @@
-import { baseUrl, token } from "./utils.js";
+import { apiUrl, token } from "./utils.js";
+
 class Api {
-	constructor({ baseUrl, headers }) {
-		this._baseUrl = baseUrl;
+	constructor({ apiUrl, headers }) {
+		this._apiUrl = apiUrl;
 		this._headers = headers;
 	}
 
@@ -17,21 +18,21 @@ class Api {
 	}
 
 	getUserInfo() {
-		return this._request(`${this._baseUrl}/users/me`, {
+		return this._request(`${this._apiUrl}/users/me`, {
 			method: "GET",
 			headers: this._headers,
 		});
 	}
 
 	getCards() {
-		return this._request(`${this._baseUrl}/cards`, {
+		return this._request(`${this._apiUrl}/cards`, {
 			method: "GET",
 			headers: this._headers,
 		});
 	}
 
 	addCard({ name, link }) {
-		return this._request(`${this._baseUrl}/cards`, {
+		return this._request(`${this._apiUrl}/cards`, {
 			method: "POST",
 			headers: this._headers,
 			body: JSON.stringify({ name, link }),
@@ -39,7 +40,7 @@ class Api {
 	}
 
 	deleteCard(cardId) {
-		return this._request(`${this._baseUrl}/cards/${cardId}`, {
+		return this._request(`${this._apiUrl}/cards/${cardId}`, {
 			method: "DELETE",
 			headers: this._headers,
 			body: JSON.stringify({ cardId }),
@@ -47,7 +48,7 @@ class Api {
 	}
 
 	setUserInfo({ name, about }) {
-		return this._request(`${this._baseUrl}/users/me`, {
+		return this._request(`${this._apiUrl}/users/me`, {
 			method: "PATCH",
 			headers: this._headers,
 			body: JSON.stringify({ name, about }),
@@ -55,7 +56,7 @@ class Api {
 	}
 
 	setAvatar({ avatar }) {
-		return this._request(`${this._baseUrl}/users/me/avatar`, {
+		return this._request(`${this._apiUrl}/users/me/avatar`, {
 			method: "PATCH",
 			headers: this._headers,
 			body: JSON.stringify({ avatar }),
@@ -63,7 +64,7 @@ class Api {
 	}
 
 	toggleCardLikeStatus(cardId, isOwnLiked) {
-		return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
+		return this._request(`${this._apiUrl}/cards/${cardId}/likes`, {
 			method: `${isOwnLiked ? "DELETE" : "PUT"}`,
 			headers: this._headers,
 			body: JSON.stringify(),
@@ -72,7 +73,7 @@ class Api {
 }
 
 const api = new Api({
-	baseUrl: baseUrl,
+	apiUrl: apiUrl,
 	headers: {
 		authorization: token,
 		"Content-Type": "application/json",
